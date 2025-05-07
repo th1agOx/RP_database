@@ -1,7 +1,6 @@
-# ORM
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Numeric, func
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, relationship
 
 Base = declarative_base()
 
@@ -14,18 +13,22 @@ class Gestor(Base):
 class CentroDeCusto(Base):
     __tablename__ = 'centro_de_custo'
     id = Column(Integer, primary_key=True)
-    nome = Column(String, nullable=False)
+    numero_cc = Column(Integer, nullable=False, unique=True)
     valor_mensal_total = Column(Float, nullable=False)
+
     gestor_id = Column(Integer, ForeignKey('gestores.id'), nullable=False)
+    relation_gestor = relationship('Gestor', back_populates='CentroDeCusto' )
 
 class Cobranca(Base):
     __tablename__ = 'cobranca'
     id = Column(Integer, primary_key=True)
-    telefone = Column(String, nullable=False, unique=True)
+    telefone = Column(Integer, nullable=False, unique=True)
     nome_funcionario = Column(String, nullable=False)
-    valor_mensal =  Column(Numeric(5, 3), nullable=False)
+    valor_mensal =  Column(Numeric(6, 2), nullable=False)
     data_referencia = Column(String, nullable=False)
+
     centro_de_custo_id = Column(Integer, ForeignKey('centro_de_custo.id'), nullable=False)
+    relation_centro_de_custo = relationship('CentroDeCusto', back_populates='Cobranca' )
 
 
 def calcular_valor_total(session, centro_de_custo_id:int ) -> float:
