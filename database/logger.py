@@ -2,6 +2,8 @@ import os
 import logging
 from logging.handlers import RotatingFileHandler  # evita que os logs cresçam em disco
 
+#Criar classe master para setuo log padronizado 
+
 def setup_logger(name, log_file, level=logging.INFO) :
     formatter = logging.Formatter('%(asctime)s - %(levelname)s : %(message)s')
 
@@ -16,13 +18,13 @@ def setup_logger(name, log_file, level=logging.INFO) :
         print(f"[FALHA AO CRIAR FILE HANDLER] {e}")
         file_handler = None
 
-        stream_handler = logging.StreamHandler()
-        stream_handler.setFormatter(formatter) 
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter) 
 
-        logger = logging.getLogger(name)
-        logger.setLevel(level)
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
 
-        if not logger.hasHandlers():
+    if not logger.hasHandlers():
             if file_handler:
                 logger.addHandler(file_handler)
 
@@ -31,5 +33,5 @@ def setup_logger(name, log_file, level=logging.INFO) :
     return logger
 
 payload_logger = setup_logger("PayLoad_log", "requests.log")
-status_db_logger = setup_logger("Status_database_log", "Status_db.log")
+send_status_db_logger = setup_logger("Status_database_log", "Status_db.log")
 orm_errors_logger = setup_logger("orm_error_logger", "orm_errors.log", level=logging.ERROR)

@@ -36,6 +36,7 @@ for gestor_table in gestor :
 
 session.close
 
+# atualizar verificações de envio do payload e fazer o envio com requests.post
 url = "10.171.155.50:5000/api/send-email-carga"
 
 for payload in data :
