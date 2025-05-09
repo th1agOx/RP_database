@@ -1,8 +1,6 @@
 import os 
 import logging
-from logging.handlers import RotatingFileHandler  # evita que os logs cresçam em disco
-
-#Criar classe master para setuo log padronizado 
+from logging.handlers import RotatingFileHandler 
 
 def setup_logger(name, log_file, level=logging.INFO) :
     formatter = logging.Formatter('%(asctime)s - %(levelname)s : %(message)s')
@@ -35,3 +33,4 @@ def setup_logger(name, log_file, level=logging.INFO) :
 payload_logger = setup_logger("PayLoad_log", "requests.log")
 send_status_db_logger = setup_logger("Status_database_log", "Status_db.log")
 orm_errors_logger = setup_logger("orm_error_logger", "orm_errors.log", level=logging.ERROR)
+commit_logger = setup_logger("Commit_Logger", "commits.log")
