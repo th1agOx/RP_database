@@ -1,6 +1,6 @@
 import requests
 from connection import SessionLocal
-from models import Gestor
+from models import Gestor, getCobranca
 import logging
 from logging.handlers import RotatingFileHandler
 from database.db_controller import getCommit
@@ -10,27 +10,19 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 handlers = RotatingFileHandler("requests.py", maxBytes=1000000, backupCount=5)
 
 session = SessionLocal()
+
 gestores = session.query(Gestor).all()
-commits = getCommit()
 
 data = []
 
 for gestor in gestores :
-    document_detail = [
-        {
-            "telefone": c.telefone,
-            "total": c.valor_mensal
-        }
-
-        for c in gestor.cobranca
-    ]
-
     payload = {
         "email_gestor": gestor.email_gestor,
-        "titulo": "Detalhes de Cobrança",
+        "titulo": "Detalhes de Cobrança",  
         "centro_de_custo": gestor.numero_cc,
-        "details": document_detail,
-        "commit": commits       # Criar separator -> commit das alterações no banco e armazenar na api, ou deixar como opção de visualização minunciosa por email 
+        "total_cc": gestor.valor_mensal_total,
+        "details": getCobranca,
+        "commit": getCommit       # Criar separator -> commit das alterações no banco e armazenar na api, ou deixar como opção de visualização por email como envio de um arquivo 
     }
 
     data.append(payload)

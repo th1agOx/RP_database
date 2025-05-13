@@ -5,8 +5,6 @@ from database.logger import send_status_db_logger, orm_errors_logger, commit_log
 
 mutation_log = [] 
 
-# adicionar post e get 
-
 def add_data(session, obj):
     try:
         mutation_log.append(("ADD", obj, None))

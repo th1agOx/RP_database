@@ -18,3 +18,19 @@ enquanto o sqlaichemy cria um escopo de teste, estrutura como o dado deve ser na
 
 # API
 trata dos dados compeltos que saem do banco
+
+- Documentação 
+
+class Cobranca(Base):
+    __tablename__ = 'cobranca'
+    id = Column(Integer, primary_key=True)
+    linha_telefonica = Column(Integer, nullable=False, unique=True)
+    nome_funcionario = Column(String, nullable=False)
+    valor =  Column(Numeric(6, 2), nullable=False)
+    
+    centro_de_custo_id = Column(Integer, ForeignKey('centro_de_custo.id'), nullable=False)
+    relation_centro_de_custo = relationship('CentroDeCusto', back_populates='Cobranca' )
+
+
+coluna valor : referênte ao valor Total da fatura a pagar 
+  * fatura possui, planos, status de uso de linhas telefonicas 
