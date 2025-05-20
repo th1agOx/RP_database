@@ -1,27 +1,35 @@
-from database.logger import send_status_db_logger , orm_errors_logger
+from logger import send_status_db_logger , orm_errors_logger
 from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime
 from database.logger import send_status_db_logger, orm_errors_logger, commit_logger
 
 mutation_log = [] 
 
+def get_data(session, obj):
+    try:
+        mutation_log.append(("GET", obj, None))
+        session.get(obj)
+    except SQLAlchemyError as db_err :  
+        session.rollback()
+        orm_errors_logger.error(f"Erro ao atualizar objeto ao banco: {db_err}")
+
 def add_data(session, obj):
     try:
         mutation_log.append(("ADD", obj, None))
         session.add(obj)
         send_status_db_logger(f"Objeto adicionado: {obj}")
-    except SQLAlchemyError as err :
-        orm_errors_logger.error(f"Erro ao adicionar objeto ao banco: {err}")
+    except SQLAlchemyError as db_err :  # erro na integração com banco via ORM
         session.rollback()
+        orm_errors_logger.error(f"Erro ao inserir objeto ao banco: {db_err}")
 
 def delete_data(session, obj):
     try:
         mutation_log.append(("DELETE", obj, None))
         session.delete(obj)
         send_status_db_logger(f"Objeto excluido: {obj}")
-    except SQLAlchemyError as err :
-        orm_errors_logger.error(f"Erro ao excluir objeto: {err}")
+    except SQLAlchemyError as db_err :
         session.rollback()
+        orm_errors_logger.error(f"Erro ao excluir objeto no banco: {db_err}")
 
 def commit_changes(session):
     try:
@@ -42,7 +50,7 @@ def trackMutationOperation(old, new):
                     }
     elif old and new :
             diffs = {"status": "deletado", "conteúdo": old.__dict__}
-    elif new and old:
+    elif new and old :
             diffs = {"status": "adicionado", "conteúdo": new.__dict__}
 
     if diffs:

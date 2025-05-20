@@ -75,4 +75,4 @@ def att_todos_centros(session: Session):
     centros = session.query(CentroDeCusto).all()
 
     for centro in centros:
-        att_valor_mensal_total(session, centros.id)
+        att_valor_mensal_total(session, centro.id)
